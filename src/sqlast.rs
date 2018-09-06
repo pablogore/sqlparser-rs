@@ -62,6 +62,13 @@ pub enum ASTNode {
         /// Optional schema
         columns: Vec<SQLColumnDef>,
     },
+    SQLDelete{
+
+        // /DELETE FROM table_name [WHERE condition];
+         /// Table name
+         projection: Vec<ASTNode>,
+
+    }
 }
 
 /// SQL column definition

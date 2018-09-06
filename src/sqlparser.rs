@@ -87,6 +87,7 @@ impl Parser {
                     Token::Keyword(k) => match k.to_uppercase().as_ref() {
                         "SELECT" => Ok(self.parse_select()?),
                         "CREATE" => Ok(self.parse_create()?),
+                        "DELETE" => Ok(self.parse_delete()?),
                         _ => return parser_err!(format!("No prefix parser for keyword {}", k)),
                     },
                     Token::Mult => Ok(ASTNode::SQLWildcard),
@@ -438,6 +439,13 @@ impl Parser {
         } else {
             Ok(None)
         }
+    }
+
+    /// Parse a DELETE statement
+    pub fn parse_delete(&mut self)-> Result<ASTNode, ParserError> {
+        Ok(ASTNode::SQLDelete{
+            projection
+        })
     }
 
     /// Parse a SELECT statement
@@ -863,6 +871,26 @@ mod tests {
             }
             _ => panic!(),
         }
+    }
+
+    #[test]
+    fn parse_delete_clause() {
+        let sql = String::from("DELETE FROM foo");
+        match  parse_sql(&sql){
+            ASTNode::SQLDelete { ref projection, .. } => {
+
+            }
+            _ => panic!(),
+        }
+
+    }
+
+
+    #[test]
+    fn parse_delete_with_where_clause() {
+        let sql = String::from("DELETE FROM foo WHERE id=5");
+        let _ast = parse_sql(&sql);
+        //TODO: assertions
     }
 
     fn parse_sql(sql: &str) -> ASTNode {
